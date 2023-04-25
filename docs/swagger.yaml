@@ -1,0 +1,228 @@
+basePath: /
+definitions:
+  main.ipAddressResponse:
+    properties:
+      address:
+        description: require
+        example: 192.168.0.2
+        type: string
+      hostname:
+        description: require
+        example: web01
+        type: string
+      id:
+        description: require
+        example: 1
+        type: integer
+      subnet_id:
+        description: require
+        example: 1
+        type: integer
+    type: object
+  main.subnetRequest:
+    properties:
+      cidr:
+        description: require
+        example: 192.168.0.0/24
+        type: string
+      description:
+        description: optional
+        example: subnet for web
+        type: string
+      gateway:
+        description: optional
+        example: 192.168.0.1
+        type: string
+      name:
+        description: require
+        example: web
+        type: string
+      name_server:
+        description: optional
+        example: 8.8.8.8
+        type: string
+    type: object
+  main.subnetResponse:
+    properties:
+      cidr:
+        description: require
+        example: 192.168.0.0/24
+        type: string
+      description:
+        description: optional
+        example: subnet for web
+        type: string
+      gateway:
+        description: optional
+        example: 192.168.0.1
+        type: string
+      id:
+        description: require
+        example: 1
+        type: integer
+      name:
+        description: require
+        example: web
+        type: string
+      name_server:
+        description: optional
+        example: 8.8.8.8
+        type: string
+    type: object
+info:
+  contact: {}
+  description: ouchi-ipam server
+  title: ouchi-ipam API
+  version: "0.1"
+paths:
+  /subnets:
+    get:
+      description: get all subnets
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.subnetResponse'
+            type: array
+      summary: Get subnets
+      tags:
+      - subnets
+    post:
+      consumes:
+      - application/json
+      description: Create a new subnet
+      parameters:
+      - description: subnet info
+        in: body
+        name: subnet
+        required: true
+        schema:
+          $ref: '#/definitions/main.subnetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.subnetResponse'
+      summary: Create a subnet
+      tags:
+      - subnets
+  /subnets/{id}:
+    delete:
+      description: Delete a subnet by ID
+      parameters:
+      - description: subnet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a subnet
+      tags:
+      - subnets
+    get:
+      description: get a subnet by ID
+      parameters:
+      - description: subnet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.subnetResponse'
+      summary: Get a subnet
+      tags:
+      - subnets
+  /subnets/{id}/ip:
+    get:
+      description: Get IP Addresses by subnet ID
+      parameters:
+      - description: Subnet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.ipAddressResponse'
+            type: array
+      summary: Get IP Addresses
+      tags:
+      - ip_addresses
+    post:
+      description: Reserve an IP Address from the specified subnet
+      parameters:
+      - description: Subnet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ipAddressResponse'
+      summary: Reserve an IP Address
+      tags:
+      - ip_addresses
+  /subnets/{id}/ip/{ip}:
+    delete:
+      description: Free a specified IP Address from the specified subnet
+      parameters:
+      - description: IP Address
+        in: path
+        name: ip
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+      summary: Free a specified IP Address
+      tags:
+      - ip_addresses
+    post:
+      description: Reserve a specified IP Address from the specified subnet
+      parameters:
+      - description: Subnet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: IP Address
+        in: path
+        name: ip
+        required: true
+        type: string
+      - description: Hostname
+        in: query
+        name: hostname
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ipAddressResponse'
+      summary: Reserve a specified IP Address
+      tags:
+      - ip_addresses
+swagger: "2.0"

@@ -1,0 +1,31 @@
+version: '3'
+services:
+  ipam:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      PG_USERNAME: ipamuser
+      PG_PASSWORD: ipam123
+      PG_HOST: db
+      PG_DATABASE: ipamdb
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ipamuser
+      POSTGRES_PASSWORD: ipam123
+      POSTGRES_DB: ipamdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_vol:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+volumes:
+  pg_vol:

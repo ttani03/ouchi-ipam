@@ -1,0 +1,331 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "ouchi-ipam server",
+        "title": "ouchi-ipam API",
+        "contact": {},
+        "version": "0.1"
+    },
+    "basePath": "/",
+    "paths": {
+        "/subnets": {
+            "get": {
+                "description": "get all subnets",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "summary": "Get subnets",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/main.subnetResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new subnet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "summary": "Create a subnet",
+                "parameters": [
+                    {
+                        "description": "subnet info",
+                        "name": "subnet",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.subnetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.subnetResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/subnets/{id}": {
+            "get": {
+                "description": "get a subnet by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "summary": "Get a subnet",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "subnet ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.subnetResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a subnet by ID",
+                "tags": [
+                    "subnets"
+                ],
+                "summary": "Delete a subnet",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "subnet ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/subnets/{id}/ip": {
+            "get": {
+                "description": "Get IP Addresses by subnet ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ip_addresses"
+                ],
+                "summary": "Get IP Addresses",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Subnet ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/main.ipAddressResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Reserve an IP Address from the specified subnet",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ip_addresses"
+                ],
+                "summary": "Reserve an IP Address",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Subnet ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.ipAddressResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/subnets/{id}/ip/{ip}": {
+            "post": {
+                "description": "Reserve a specified IP Address from the specified subnet",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ip_addresses"
+                ],
+                "summary": "Reserve a specified IP Address",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Subnet ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "IP Address",
+                        "name": "ip",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Hostname",
+                        "name": "hostname",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.ipAddressResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Free a specified IP Address from the specified subnet",
+                "tags": [
+                    "ip_addresses"
+                ],
+                "summary": "Free a specified IP Address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "IP Address",
+                        "name": "ip",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.ipAddressResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "require",
+                    "type": "string",
+                    "example": "192.168.0.2"
+                },
+                "hostname": {
+                    "description": "require",
+                    "type": "string",
+                    "example": "web01"
+                },
+                "id": {
+                    "description": "require",
+                    "type": "integer",
+                    "example": 1
+                },
+                "subnet_id": {
+                    "description": "require",
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "main.subnetRequest": {
+            "type": "object",
+            "properties": {
+                "cidr": {
+                    "description": "require",
+                    "type": "string",
+                    "example": "192.168.0.0/24"
+                },
+                "description": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "subnet for web"
+                },
+                "gateway": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "192.168.0.1"
+                },
+                "name": {
+                    "description": "require",
+                    "type": "string",
+                    "example": "web"
+                },
+                "name_server": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "8.8.8.8"
+                }
+            }
+        },
+        "main.subnetResponse": {
+            "type": "object",
+            "properties": {
+                "cidr": {
+                    "description": "require",
+                    "type": "string",
+                    "example": "192.168.0.0/24"
+                },
+                "description": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "subnet for web"
+                },
+                "gateway": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "192.168.0.1"
+                },
+                "id": {
+                    "description": "require",
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "description": "require",
+                    "type": "string",
+                    "example": "web"
+                },
+                "name_server": {
+                    "description": "optional",
+                    "type": "string",
+                    "example": "8.8.8.8"
+                }
+            }
+        }
+    }
+}
