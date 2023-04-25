@@ -157,7 +157,6 @@ func (s *Server) createSubnet(c echo.Context) error {
 
 	subnet, err := s.db.CreateSubnet(context.Background(), *params)
 	if err != nil {
-		s.echo.Logger.Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
